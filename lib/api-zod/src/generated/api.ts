@@ -24,7 +24,6 @@ export const startPipelineRunBodyConfigRunNameDefault = `default_run`;
 export const startPipelineRunBodyConfigChunkTargetTokensDefault = 600;
 export const startPipelineRunBodyConfigChunkOverlapDefault = 80;
 export const startPipelineRunBodyConfigGenerationModeDefault = `qa`;
-export const startPipelineRunBodyConfigGenerationTemperatureDefault = 0.2;
 export const startPipelineRunBodyConfigGenerationMaxRecordsPerChunkDefault = 1;
 export const startPipelineRunBodyConfigValidationMinLengthDefault = 50;
 export const startPipelineRunBodyConfigValidationMaxLengthDefault = 4096;
@@ -60,9 +59,6 @@ export const StartPipelineRunBody = zod.object({
         mode: zod
           .enum(["qa", "instruction", "summary", "chat"])
           .default(startPipelineRunBodyConfigGenerationModeDefault),
-        temperature: zod
-          .number()
-          .default(startPipelineRunBodyConfigGenerationTemperatureDefault),
         max_records_per_chunk: zod
           .number()
           .default(

@@ -208,7 +208,7 @@ def _repair_json_object(text: str) -> Optional[dict]:
     return None
 
 
-def _llm_call(client: OpenAI, model: str, prompt: str, max_tokens: int = 2048, temperature: float = 1.0) -> Optional[str]:
+def _llm_call(client: OpenAI, model: str, prompt: str, max_tokens: int = 2048) -> Optional[str]:
     """Make a single LLM call with retry logic."""
     for attempt in range(3):
         try:
@@ -216,7 +216,6 @@ def _llm_call(client: OpenAI, model: str, prompt: str, max_tokens: int = 2048, t
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
                 max_completion_tokens=max_tokens,
-                temperature=temperature,
             )
             return response.choices[0].message.content or ""
         except Exception as e:
@@ -235,11 +234,10 @@ def _generate_cot(
     model = config.teacher_model or "gpt-5-mini"
     n = config.max_records_per_chunk
     prompt = COT_PROMPT.format(text=chunk.text[:4000], n=n)
-    temperature = getattr(config, "temperature", 1.0)
-    if temperature is None:
-        temperature = 1.0
 
-    raw = _llm_call(client, model, prompt, max_tokens=3000, temperature=temperature)
+
+
+    raw = _llm_call(client, model, prompt, max_tokens=3000,)
     if not raw:
         return []
 
@@ -294,12 +292,11 @@ def _generate_dpo(
     client = _get_client()
     model = config.teacher_model or "gpt-5-mini"
     n = config.max_records_per_chunk
-    temperature = getattr(config, "temperature", 1.0)
-    if temperature is None:
-        temperature = 1.0
+
+
 
     instr_prompt = DPO_INSTRUCTION_PROMPT.format(text=chunk.text[:4000], n=n)
-    raw_instrs = _llm_call(client, model, instr_prompt, max_tokens=1024, temperature=temperature)
+    raw_instrs = _llm_call(client, model, instr_prompt, max_tokens=1024,)
     if not raw_instrs:
         return []
 
@@ -320,8 +317,8 @@ def _generate_dpo(
             text=chunk.text[:3000], instruction=instruction
         )
 
-        raw_preferred = _llm_call(client, model, preferred_prompt, max_tokens=1024, temperature=temperature)
-        raw_rejected = _llm_call(client, model, rejected_prompt, max_tokens=512, temperature=temperature)
+        raw_preferred = _llm_call(client, model, preferred_prompt, max_tokens=1024,)
+        raw_rejected = _llm_call(client, model, rejected_prompt, max_tokens=512,)
 
         if not raw_preferred or not raw_rejected:
             continue
@@ -373,11 +370,10 @@ def _generate_sft(
     model = config.teacher_model or "gpt-5-mini"
     n = config.max_records_per_chunk
     prompt = SFT_PROMPT.format(text=chunk.text[:4000], n=n)
-    temperature = getattr(config, "temperature", 1.0)
-    if temperature is None:
-        temperature = 1.0
 
-    raw = _llm_call(client, model, prompt, max_tokens=3000, temperature=temperature)
+
+
+    raw = _llm_call(client, model, prompt, max_tokens=3000,)
     if not raw:
         return []
 
@@ -439,15 +435,14 @@ def generate_for_chunk(
     prompt_template = PROMPTS.get(mode, QA_PROMPT)
     prompt = prompt_template.format(text=chunk.text[:4000], n=n)
 
-    # Get temperature from config, default to 1.0 if not set
-    temperature = getattr(config, "temperature", 1.0)
-    if temperature is None:
-        temperature = 1.0
+
+
+
 
     client = _get_client()
     parsed = None
     for attempt in range(3):
-        raw = _llm_call(client, "gpt-5-mini", prompt, max_tokens=2048, temperature=temperature)
+        raw = _llm_call(client, "gpt-5-mini", prompt, max_tokens=2048,)
         if not raw:
             return []
         parsed = _repair_json(raw)

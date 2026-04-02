@@ -332,9 +332,6 @@ components:
           type: string
           enum: [qa, instruction, summary, chat]
           default: qa
-        temperature:
-          type: number
-          default: 0.2
         max_records_per_chunk:
           type: integer
           default: 1

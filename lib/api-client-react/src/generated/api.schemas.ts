@@ -41,7 +41,6 @@ export const GenerationConfigMode = {
 
 export interface GenerationConfig {
   mode?: GenerationConfigMode;
-  temperature?: number;
   max_records_per_chunk?: number;
 }
 
