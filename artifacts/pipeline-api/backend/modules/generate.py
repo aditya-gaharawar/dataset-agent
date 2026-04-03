@@ -431,6 +431,7 @@ def generate_for_chunk(
             return _generate_sft(chunk, config, existing_hashes)
 
     mode = config.mode
+    model = config.teacher_model or "gpt-5-mini"
     n = config.max_records_per_chunk
     prompt_template = PROMPTS.get(mode, QA_PROMPT)
     prompt = prompt_template.format(text=chunk.text[:4000], n=n)
@@ -442,7 +443,7 @@ def generate_for_chunk(
     client = _get_client()
     parsed = None
     for attempt in range(3):
-        raw = _llm_call(client, "gpt-5-mini", prompt, max_tokens=2048,)
+        raw = _llm_call(client, model, prompt, max_tokens=2048,)
         if not raw:
             return []
         parsed = _repair_json(raw)
@@ -524,7 +525,10 @@ def run_generate(
             records = generate_for_chunk(chunk, config, existing_hashes)
             if records:
                 consecutive_failures = 0
-                all_records.extend(records)
+                remaining = max_records - len(all_records)
+                if remaining <= 0:
+                    break
+                all_records.extend(records[:remaining])
             else:
                 consecutive_failures += 1
             logger.debug(f"Chunk {i+1}/{len(chunks)}: {len(records)} records generated")
