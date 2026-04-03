@@ -77,7 +77,6 @@ class ChunkConfig(BaseModel):
 
 class GenerationConfig(BaseModel):
     mode: str = "qa"
-    temperature: float = 0.2
     max_records_per_chunk: int = 1
     distillation_mode: Optional[DistillationMode] = None
     teacher_model: str = "gpt-5-mini"
