@@ -114,16 +114,38 @@ def _html_to_text(html: str, url: str = "") -> str:
         return ""
 
 
+from urllib.parse import urljoin
+
 def ingest_url(url: str) -> Source | None:
     """Fetch a URL and extract text. Raises ValueError for unsafe URLs (SSRF prevention)."""
-    safe, reason = _is_safe_url(url)
-    if not safe:
-        raise ValueError(f"URL blocked for security: {reason}")
-
+    current_url = url
     session = _make_session()
+
+    # Handle redirects manually to prevent SSRF via redirects
+    for _ in range(5):  # Max 5 redirects
+        safe, reason = _is_safe_url(current_url)
+        if not safe:
+            raise ValueError(f"URL blocked for security: {reason}")
+
+        try:
+            resp = session.get(current_url, timeout=15, allow_redirects=False)
+            if resp.status_code in (301, 302, 303, 307, 308):
+                location = resp.headers.get("Location")
+                if not location:
+                    raise ValueError("Redirect response missing Location header")
+                current_url = urljoin(current_url, location)
+                continue
+
+            resp.raise_for_status()
+            break
+        except Exception as e:
+            logger.error(f"Failed to ingest URL {current_url}: {e}")
+            return None
+    else:
+        logger.error(f"Too many redirects for URL {url}")
+        return None
+
     try:
-        resp = session.get(url, timeout=15)
-        resp.raise_for_status()
         content_type = resp.headers.get("content-type", "")
         if "html" in content_type:
             raw_text = _html_to_text(resp.text, url)
