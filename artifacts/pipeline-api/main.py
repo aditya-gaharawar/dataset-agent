@@ -44,7 +44,7 @@ app = FastAPI(
         "Production-grade dataset factory for AI training data.\n\n"
         "## Authentication\n\n"
         "When the server is started with the `API_KEY` environment variable set, "
-        "all `/api/v1/` routes require an `Authorization: Bearer <key>` header.\n\n"
+        "all protected routes require an `Authorization: Bearer <key>` header.\n\n"
         "The `/pipeline/healthz` and `/api/v1/metrics` endpoints are always public."
     ),
     version="1.0.0",
@@ -65,16 +65,18 @@ app.add_middleware(
 
 @app.middleware("http")
 async def api_key_middleware(request: Request, call_next):
-    """Require Authorization: Bearer <API_KEY> on /api/v1/* routes when API_KEY is set."""
+    """Require Authorization: Bearer <API_KEY> on protected routes when API_KEY is set."""
     if not _API_KEY:
         return await call_next(request)
 
     path = request.url.path
-    if not path.startswith("/api/v1/"):
+
+    protected_prefixes = ("/api/v1/", "/pipeline", "/runs", "/datasets", "/ingest")
+    if not any(path.startswith(prefix) for prefix in protected_prefixes):
         return await call_next(request)
 
-    public_v1_paths = {"/api/v1/metrics", "/api/v1/queue"}
-    if path in public_v1_paths:
+    public_paths = {"/api/v1/metrics", "/api/v1/queue", "/pipeline/healthz"}
+    if path in public_paths:
         return await call_next(request)
 
     auth_header = request.headers.get("Authorization", "")
