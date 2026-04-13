@@ -1,0 +1,4 @@
+## 2025-03-08 - Fix Timing Attack Vulnerability in API Key Authentication
+**Vulnerability:** The API key authentication middleware used standard string comparison (`token != _API_KEY`) to verify the provided bearer token. This is vulnerable to timing attacks, where an attacker can observe the time taken for the comparison to fail and use that information to deduce the valid API key character by character.
+**Learning:** Standard string comparisons in languages like Python return early as soon as a character mismatch is found. This early exit creates a measurable timing difference that attackers can exploit to bypass authentication over many requests.
+**Prevention:** Always use constant-time comparison functions, such as `secrets.compare_digest` in Python, for cryptographic secrets like API keys, passwords, and tokens to prevent timing attacks.
