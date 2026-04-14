@@ -1,0 +1,4 @@
+## 2025-01-01 - Fix Timing Attack in API Key Verification
+**Vulnerability:** The API key verification logic in `artifacts/pipeline-api/main.py` used the standard equality operator (`!=`) to compare the user-provided token with the expected API key. This is vulnerable to timing attacks, as string comparison typically terminates early upon finding a mismatch, allowing an attacker to deduce the key character by character by measuring response times.
+**Learning:** Security-critical string comparisons, especially for authentication tokens and passwords, must be performed in constant time. Standard comparison operators leak information about the correctness of the guess.
+**Prevention:** Always use `secrets.compare_digest()` (in Python) or an equivalent constant-time comparison function provided by a trusted cryptography library when verifying tokens, passwords, HMACs, or other secret values.
