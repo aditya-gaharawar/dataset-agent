@@ -4,6 +4,7 @@ import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
+import secrets
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -87,7 +88,7 @@ async def api_key_middleware(request: Request, call_next):
         )
 
     token = auth_header[len("Bearer "):]
-    if token != _API_KEY:
+    if not secrets.compare_digest(token, _API_KEY):
         return JSONResponse(
             status_code=401,
             content={"detail": "Invalid API key."},
