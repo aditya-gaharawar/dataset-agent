@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import secrets
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -87,7 +88,8 @@ async def api_key_middleware(request: Request, call_next):
         )
 
     token = auth_header[len("Bearer "):]
-    if token != _API_KEY:
+    # Secure string comparison to prevent timing attacks
+    if not secrets.compare_digest(token, _API_KEY):
         return JSONResponse(
             status_code=401,
             content={"detail": "Invalid API key."},
