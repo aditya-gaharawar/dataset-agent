@@ -1,0 +1,4 @@
+## 2024-05-18 - Timing attack vulnerability in API key authentication
+**Vulnerability:** The FastAPI backend used a standard string comparison (`!=`) to compare the provided API key with the expected API key. This approach is vulnerable to timing attacks, where an attacker can deduce the API key character by character by measuring the time it takes for the comparison to fail.
+**Learning:** String comparisons in Python (and many other languages) fail fast, returning immediately when a character mismatch is found. This makes the execution time dependent on the number of matching characters at the beginning of the strings.
+**Prevention:** Always use a constant-time comparison function, such as `secrets.compare_digest` in Python, when comparing sensitive data like passwords, API keys, or tokens. This ensures that the comparison time is independent of the string content.
