@@ -1,0 +1,4 @@
+## 2026-05-01 - [API Key Timing Attack Vulnerability in Authentication Middleware]
+**Vulnerability:** Fast fail standard string comparison (`token != _API_KEY`) used for evaluating authorization tokens in `artifacts/pipeline-api/main.py`. This standard string comparison can expose the correct token one character at a time because the evaluation stops returning False early on mismatched characters, which leads to varying processing times that an attacker can measure (a timing attack).
+**Learning:** Developers often default to equality operators for token/password comparisons, missing the nuanced timing side channels that leak secrets across the network.
+**Prevention:** Always use constant-time comparison methods like `secrets.compare_digest(a, b)` for any operation comparing sensitive data like tokens, passwords, or API keys.
