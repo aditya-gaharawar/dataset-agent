@@ -1,0 +1,4 @@
+## 2024-06-11 - Timing Attack Vulnerability in API Key Authentication
+**Vulnerability:** The API key middleware (`api_key_middleware`) in `artifacts/pipeline-api/main.py` used a standard string equality check (`if token != _API_KEY:`) to compare the provided API key token with the expected API key.
+**Learning:** Standard string comparisons stop comparing as soon as they find a mismatching character. This means the time it takes to process the request can reveal how many characters of the provided token matched the expected secret. This can be exploited in a timing attack to incrementally guess the API key character by character.
+**Prevention:** Always use a constant-time comparison function, such as `secrets.compare_digest(a, b)`, when comparing secrets, passwords, or tokens to prevent leaking information through execution time variations.
