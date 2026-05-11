@@ -1,0 +1,4 @@
+## 2024-05-11 - Timing attack vulnerability in API key validation
+**Vulnerability:** The API key validation in `artifacts/pipeline-api/main.py` used standard string comparison (`token != _API_KEY`) which stops comparing as soon as it finds a mismatch. This allows attackers to potentially guess the API key character-by-character by measuring the time it takes for the server to reject the request (a timing attack).
+**Learning:** Standard string comparisons should never be used for validating secrets like API keys or passwords, even if they seem straightforward. The execution time of standard string comparison is proportional to the number of matching characters at the beginning of the string.
+**Prevention:** Always use constant-time comparison functions for secrets validation, such as `secrets.compare_digest` in Python, or `crypto.timingSafeEqual` in Node.js.
