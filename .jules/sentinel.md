@@ -1,0 +1,4 @@
+## 2024-05-18 - Prevent Timing Attacks in API Key Verification
+**Vulnerability:** API key verification was using standard string comparison (`token != _API_KEY`), which returns early on the first mismatched character. This is vulnerable to timing attacks, where an attacker can determine the key character by character by measuring response times.
+**Learning:** Basic string comparison is insecure for comparing sensitive secrets like API keys or passwords, even in seemingly simple middleware. The attacker can incrementally guess the key and statistically observe timing differences.
+**Prevention:** Always use constant-time comparison functions when verifying secrets. In Python, use `secrets.compare_digest(a, b)` instead of `a == b`. This ensures the comparison time is independent of the inputs, preventing timing side-channel attacks.
