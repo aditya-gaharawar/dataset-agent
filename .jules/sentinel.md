@@ -1,0 +1,4 @@
+## 2024-05-24 - Timing Attack Vulnerability in API Key Validation
+**Vulnerability:** The API key validation in `main.py` used a standard string equality operator (`==` / `!=`) to compare the user-provided token with the expected API key. This exposed the endpoint to timing attacks, where an attacker could theoretically infer the API key character by character based on the time it takes for the comparison to fail.
+**Learning:** Standard string comparisons in Python return `False` as soon as a character mismatch is found. This makes the execution time dependent on the length of the matching prefix. When comparing security-sensitive secrets like passwords, tokens, or API keys, this timing side-channel must be eliminated.
+**Prevention:** Always use `secrets.compare_digest(a, b)` for comparing secret values. This function uses a constant-time comparison algorithm, ensuring the execution time is independent of the input values, thereby preventing timing attacks.
