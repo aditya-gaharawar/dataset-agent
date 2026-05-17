@@ -1,0 +1,4 @@
+## 2025-02-28 - Timing Attack on API Key Verification
+**Vulnerability:** The API key verification in `artifacts/pipeline-api/main.py` used a simple string comparison (`token != _API_KEY`). This could allow an attacker to perform a timing attack by measuring the time it takes for the server to reject incorrect tokens, eventually allowing them to guess the correct API key character by character.
+**Learning:** Standard string comparison operators in Python (and many other languages) return immediately upon finding the first non-matching character, making the comparison time dependent on the length of the matching prefix.
+**Prevention:** Always use constant-time comparison functions, such as `secrets.compare_digest` in Python, when comparing secrets like API keys, passwords, or cryptographic hashes.
