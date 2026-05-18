@@ -1,0 +1,4 @@
+## 2025-02-23 - [Timing Attack Vulnerability in Authentication]
+**Vulnerability:** A timing attack vulnerability was identified in the API key verification process within `artifacts/pipeline-api/main.py`. The comparison between the provided token and the actual API key used the standard equality operator (`!=`), which terminates early when it finds the first mismatched character. This execution time difference can allow an attacker to guess the API key character by character by measuring the response time.
+**Learning:** This vulnerability existed because the default string equality operator was used for comparing sensitive security tokens, rather than a constant-time comparison function specifically designed for this purpose.
+**Prevention:** To prevent timing attacks, always use constant-time comparison functions like `secrets.compare_digest(a, b)` in Python for comparing sensitive strings, such as passwords, tokens, API keys, or cryptographic signatures.
