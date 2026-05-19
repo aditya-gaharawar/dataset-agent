@@ -1,0 +1,4 @@
+## 2024-05-24 - Timing Attack Vulnerability in API Key Verification
+**Vulnerability:** The API key verification in `main.py` used a standard string comparison (`token != _API_KEY`). This could allow an attacker to perform a timing attack by measuring the time it takes to compare the token and the API key, potentially revealing the API key character by character.
+**Learning:** Standard string comparisons in Python (like `==` and `!=`) exit early as soon as a mismatch is found. This early exit causes variations in response times depending on how much of the token matches the API key.
+**Prevention:** Use a constant-time comparison function, such as `secrets.compare_digest()`, which always takes the same amount of time to compare two strings, regardless of their contents, thereby preventing timing attacks.
