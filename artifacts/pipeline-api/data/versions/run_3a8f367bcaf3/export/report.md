@@ -6,23 +6,22 @@
 
 ## Score Distribution
 
-| Metric | Value |
-|--------|-------|
+| Metric          | Value  |
+| --------------- | ------ |
 | Avg Final Score | 0.0000 |
-| Min Score | 0.0000 |
-| Max Score | 0.0000 |
+| Min Score       | 0.0000 |
+| Max Score       | 0.0000 |
 
 ## Record Types
 
-
 ## Pipeline Stage Metrics
 
-| Stage | Input | Output | Latency (ms) |
-|-------|-------|--------|--------------|
-| ingest | 1 | 1 | 0 |
-| clean | 1 | 1 | 0 |
-| dedup | 1 | 1 | 0 |
-| chunk | 1 | 1 | 2 |
-| generate | 1 | 1 | 3893 |
-| validate | 1 | 1 | 0 |
-| score | 1 | 0 | 0 |
+| Stage    | Input | Output | Latency (ms) |
+| -------- | ----- | ------ | ------------ |
+| ingest   | 1     | 1      | 0            |
+| clean    | 1     | 1      | 0            |
+| dedup    | 1     | 1      | 0            |
+| chunk    | 1     | 1      | 2            |
+| generate | 1     | 1      | 3893         |
+| validate | 1     | 1      | 0            |
+| score    | 1     | 0      | 0            |
