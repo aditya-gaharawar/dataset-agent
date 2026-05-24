@@ -27,11 +27,11 @@ cp example.env .env
 
 Required environment variables:
 
-| Variable | Description |
-|----------|-------------|
-| `AI_INTEGRATIONS_OPENAI_API_KEY` | OpenAI API key for LLM generation (required) |
-| `AI_INTEGRATIONS_OPENAI_BASE_URL` | Custom API endpoint (optional) |
-| `HUGGINGFACE_TOKEN` | HF token for dataset upload (optional) |
+| Variable                          | Description                                  |
+| --------------------------------- | -------------------------------------------- |
+| `AI_INTEGRATIONS_OPENAI_API_KEY`  | OpenAI API key for LLM generation (required) |
+| `AI_INTEGRATIONS_OPENAI_BASE_URL` | Custom API endpoint (optional)               |
+| `HUGGINGFACE_TOKEN`               | HF token for dataset upload (optional)       |
 
 ### 2. Installation
 
@@ -88,15 +88,15 @@ curl -X POST http://localhost:8000/pipeline/run \
 
 ### Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/pipeline/run` | Start a pipeline run |
-| `GET` | `/pipeline/runs` | List all runs |
-| `GET` | `/pipeline/runs/{id}` | Get run details |
-| `GET` | `/pipeline/runs/{id}/download` | Download dataset |
+| Method | Path                              | Description           |
+| ------ | --------------------------------- | --------------------- |
+| `POST` | `/pipeline/run`                   | Start a pipeline run  |
+| `GET`  | `/pipeline/runs`                  | List all runs         |
+| `GET`  | `/pipeline/runs/{id}`             | Get run details       |
+| `GET`  | `/pipeline/runs/{id}/download`    | Download dataset      |
 | `POST` | `/pipeline/runs/{id}/push-to-hub` | Upload to HuggingFace |
-| `GET` | `/pipeline/runs/{id}/stream` | SSE event stream |
-| `GET` | `/pipeline/healthz` | Health check |
+| `GET`  | `/pipeline/runs/{id}/stream`      | SSE event stream      |
+| `GET`  | `/pipeline/healthz`               | Health check          |
 
 ### Run Configuration
 
@@ -104,9 +104,18 @@ curl -X POST http://localhost:8000/pipeline/run \
 {
   "run_name": "my_dataset",
   "sources": [
-    {"type": "url", "value": "https://example.com/page"},
-    {"type": "crawl", "seed_url": "https://docs.example.com", "max_depth": 2, "max_pages": 50},
-    {"type": "text", "value": "Your text content here", "title": "Custom Source"}
+    { "type": "url", "value": "https://example.com/page" },
+    {
+      "type": "crawl",
+      "seed_url": "https://docs.example.com",
+      "max_depth": 2,
+      "max_pages": 50
+    },
+    {
+      "type": "text",
+      "value": "Your text content here",
+      "title": "Custom Source"
+    }
   ],
   "crawl": {
     "seed_url": "",
@@ -140,12 +149,12 @@ curl -X POST http://localhost:8000/pipeline/run \
 
 ### Generation Modes
 
-| Mode | Description |
-|------|-------------|
-| `qa` | Question-Answer pairs |
-| `cot` | Chain-of-Thought reasoning |
+| Mode  | Description                          |
+| ----- | ------------------------------------ |
+| `qa`  | Question-Answer pairs                |
+| `cot` | Chain-of-Thought reasoning           |
 | `dpo` | Direct Preference Optimization pairs |
-| `sft` | Supervised Fine-Tuning format |
+| `sft` | Supervised Fine-Tuning format        |
 
 ## Data Flow
 
@@ -185,14 +194,14 @@ data/versions/{run_id}/
 
 See `example.env` for all configuration options.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `AI_INTEGRATIONS_OPENAI_API_KEY` | - | OpenAI API key (required) |
-| `AI_INTEGRATIONS_OPENAI_BASE_URL` | - | Custom API endpoint |
-| `HUGGINGFACE_TOKEN` | - | HF Hub token |
-| `PIPELINE_PORT` | 8000 | Server port |
-| `PIPELINE_CONCURRENCY` | 4 | Max concurrent runs |
-| `API_KEY` | - | API authentication key |
+| Variable                          | Default | Description               |
+| --------------------------------- | ------- | ------------------------- |
+| `AI_INTEGRATIONS_OPENAI_API_KEY`  | -       | OpenAI API key (required) |
+| `AI_INTEGRATIONS_OPENAI_BASE_URL` | -       | Custom API endpoint       |
+| `HUGGINGFACE_TOKEN`               | -       | HF Hub token              |
+| `PIPELINE_PORT`                   | 8000    | Server port               |
+| `PIPELINE_CONCURRENCY`            | 4       | Max concurrent runs       |
+| `API_KEY`                         | -       | API authentication key    |
 
 ## Testing
 
