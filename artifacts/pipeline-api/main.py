@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import secrets
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -56,8 +57,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000").split(","),
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -87,7 +87,7 @@ async def api_key_middleware(request: Request, call_next):
         )
 
     token = auth_header[len("Bearer "):]
-    if token != _API_KEY:
+    if not secrets.compare_digest(token, _API_KEY):
         return JSONResponse(
             status_code=401,
             content={"detail": "Invalid API key."},

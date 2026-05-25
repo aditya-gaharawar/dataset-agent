@@ -1,0 +1,4 @@
+## 2024-05-25 - Timing Attack and Insecure CORS Vulnerabilities
+**Vulnerability:** Found two vulnerabilities in the FastAPI backend: a timing attack vulnerability in API key authentication (using standard string comparison `!=` instead of constant-time comparison) and an overly permissive CORS configuration (`allow_origins=["*"]` combined with `allow_credentials=True`).
+**Learning:** Standard string comparison operators leak timing information, allowing attackers to guess API keys character by character. Additionally, configuring wildcard CORS with credentials permitted exposes the API to serious cross-site attacks, violating CORS best practices and standard security bounds.
+**Prevention:** Always use `secrets.compare_digest` for validating tokens or passwords to prevent timing attacks. Avoid combining wildcard origins with `allow_credentials=True` in CORS configurations; instead, define explicit trusted origins or do not allow credentials if unnecessary.
